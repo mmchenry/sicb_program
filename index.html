@@ -25,6 +25,9 @@ text-decoration:none;color:inherit;transition:border-color .12s,box-shadow .12s;
 .card h3{margin:0 0 5px;font-size:16px;color:var(--accent)}
 .card p{margin:0;font-size:13.5px;color:#444}
 .card.absent{opacity:.45;pointer-events:none;background:var(--panel);border-style:dashed}
+.card.personal{border-color:#e8a300;background:#fffdf6}
+.card.personal h3{color:#8a6100}
+.card.personal .star{color:#e8a300;margin-right:5px}
 footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);
 font-size:12px;color:var(--muted)}
 </style>
@@ -69,6 +72,18 @@ Published by the SICB program office. Times are local to the meeting.
   var year = years[0];
   var have = year ? (map[year] || []) : [];
   var host = document.getElementById("cards");
+  // My program comes first: the schedule page opened straight into the personal itinerary. It links to
+  // #myprogram, which the page's script reads on load to open the My-program view. Shown whenever the
+  // schedule page exists, since that is where a reader's starred talks are placed.
+  if (year && have.indexOf("schedule") !== -1) {
+    var mp = document.createElement("a");
+    mp.className = "card personal";
+    mp.href = year + "/schedule/index.html#myprogram";
+    mp.innerHTML = '<h3><span class="star">★</span>My program</h3>' +
+      "<p>The talks and posters you starred, as one itinerary you can print or add to your calendar. " +
+      "Star things on any page to build it.</p>";
+    host.appendChild(mp);
+  }
   PAGES.forEach(function (p) {
     var present = have.indexOf(p.key) !== -1;
     var a = document.createElement("a");
