@@ -82,18 +82,6 @@ Published by the SICB program office. Times are local to the meeting.
   var year = years[0];
   var have = year ? (map[year] || []) : [];
   var host = document.getElementById("cards");
-  // My program comes first: the schedule page opened straight into the personal itinerary. It links to
-  // #myprogram, which the page's script reads on load to open the My-program view. Shown whenever the
-  // schedule page exists, since that is where a reader's starred talks are placed.
-  if (year && have.indexOf("schedule") !== -1) {
-    var mp = document.createElement("a");
-    mp.className = "card personal";
-    mp.href = year + "/schedule/index.html#myprogram";
-    mp.innerHTML = '<h3><span class="star">★</span>My program</h3>' +
-      "<p>The talks and posters you starred, as one itinerary you can print or add to your calendar. " +
-      "Star things on any page to build it.</p>";
-    host.appendChild(mp);
-  }
   PAGES.forEach(function (p) {
     var present = have.indexOf(p.key) !== -1;
     var a = document.createElement("a");
@@ -103,6 +91,19 @@ Published by the SICB program office. Times are local to the meeting.
       (present ? "" : " (not yet published)") + "</p>";
     host.appendChild(a);
   });
+  // My program comes last (per the PO, 2026-10-07): the schedule page opened straight into the personal
+  // itinerary. It links to #myprogram, which the page's script reads on load to open the My-program
+  // view. Shown whenever the schedule page exists, since that is where a reader's starred talks are
+  // placed.
+  if (year && have.indexOf("schedule") !== -1) {
+    var mp = document.createElement("a");
+    mp.className = "card personal";
+    mp.href = year + "/schedule/index.html#myprogram";
+    mp.innerHTML = '<h3><span class="star">★</span>My program</h3>' +
+      "<p>The talks and posters you starred, as one itinerary you can print or add to your calendar. " +
+      "Star things on any page to build it.</p>";
+    host.appendChild(mp);
+  }
 })();
 </script>
 </body>
