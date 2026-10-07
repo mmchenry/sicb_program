@@ -6,6 +6,7 @@ window.SICB_PAGES = {
     "talks",
     "posters",
     "symposia",
+    "activities",
     "authors",
     "venue"
   ]
