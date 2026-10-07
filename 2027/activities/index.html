@@ -986,8 +986,8 @@ document.querySelectorAll('.sx').forEach(function (b) {
 sxRefresh();
 
 // --- Remembered filters ----------------------------------------------------
-var PPF_KEY = 'sicb-filters-2027-activities';
-var PPF_SESSION = true;
+var PPF_KEY = 'sicb-filters-2027';
+var PPF_OLD = 'sicb-filters-2027-activities';
 var PPF_SEL = 'input[type=checkbox][data-div],input[type=checkbox][data-day]';
 
 function ppfKey(cb) {
@@ -996,28 +996,26 @@ function ppfKey(cb) {
   return '';
 }
 
-// Where the filters are kept: across visits on the committee site, for the visit alone on the member
-// site, whose readers should find everything selected when they come back to a page.
-var PPF_STORE = (function () {
-  try {
-    if (PPF_SESSION) { localStorage.removeItem(PPF_KEY); return sessionStorage; }
-    return localStorage;
-  } catch (e) { return null; }
-})();
+// The member site keeps one store for every page, so the per-page one an earlier version of it kept is
+// dropped rather than left to linger.
+if (PPF_OLD) { try { localStorage.removeItem(PPF_OLD); } catch (e) { /* private mode */ } }
 
+// Saved into whatever the store already holds, so on the member site, where every page shares it, a
+// page writes its own boxes and leaves the others' choices alone.
 function ppfSave() {
   var state = {};
+  try { state = JSON.parse(localStorage.getItem(PPF_KEY) || '{}') || {}; } catch (e) { state = {}; }
   document.querySelectorAll(PPF_SEL).forEach(function (cb) {
     var k = ppfKey(cb);
     if (k) state[k] = cb.checked;
   });
-  try { PPF_STORE.setItem(PPF_KEY, JSON.stringify(state)); } catch (e) { /* private mode */ }
+  try { localStorage.setItem(PPF_KEY, JSON.stringify(state)); } catch (e) { /* private mode */ }
 }
 
 // Returns whether anything moved, so a first visit costs nothing.
 function ppfRestore() {
   var raw = null;
-  try { raw = PPF_STORE.getItem(PPF_KEY); } catch (e) { return false; }
+  try { raw = localStorage.getItem(PPF_KEY); } catch (e) { return false; }
   if (!raw) return false;
   var state;
   try { state = JSON.parse(raw); } catch (e) { return false; }

@@ -34,6 +34,15 @@ text-decoration:none;color:inherit;transition:border-color .12s,box-shadow .12s;
 .card.blue{background:#edf4fc;border-color:#c4d8f0}
 .card.blue h3{color:#1f4d86}
 .card.personal{border-color:#e8a300;background:#fffdf6}
+/* On a desktop the cards stand portrait: the three green across the top, the four blue under them,
+   and My program across a whole row (per the PO, 2026-10-07). A phone keeps its single column. */
+@media (min-width:701px){
+  .cards{grid-template-columns:repeat(12,minmax(0,1fr))}
+  .card{text-align:center}
+  .card.green{grid-column:span 4;aspect-ratio:4/5}
+  .card.blue{grid-column:span 3;aspect-ratio:4/5}
+  .card.personal{grid-column:1/-1}
+}
 .card.personal h3{color:#8a6100}
 .card.personal .star{color:#e8a300;margin-right:5px}
 footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);
