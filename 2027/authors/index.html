@@ -183,8 +183,8 @@ line-height:1;color:#999;cursor:pointer;padding:0 3px}
   .ppihead{display:block;margin:0 0 12px}
   .ppitem{break-inside:avoid}
   .ppdevice{display:none!important}
-  /* The compact PDF: two columns, smaller type, no author lists. The body carries pp-compact only
-     while that button's print is under way. */
+  /* The compact PDF: two columns, smaller type, no author lists. The body carries pp-compact from
+     that button's print until the next print or the reader leaves My program. */
   body.pp-compact #ppitin{column-count:2;column-gap:22px;max-width:none}
   body.pp-compact .ppday{break-after:avoid;margin:8px 0 3px;font-size:9px}
   body.pp-compact .ppitem{grid-template-columns:54px minmax(0,1fr);gap:6px;padding:3px 0}
@@ -1034,8 +1034,9 @@ function ppSetView(v) {
   document.body.classList.toggle('pp-personal', personal);
   document.querySelectorAll('.ppmenu, .ppprint, .ppprint2, .ppics, .ppxlsx, .ppcsv, .ppexport, .ppimport, .ppclear')
     .forEach(function (b) { b.hidden = !personal; });
-  // The phone's export row starts folded each time the personal view opens.
-  document.body.classList.remove('pp-more');
+  // The phone's export row starts folded each time the personal view opens, and a compact print chosen
+  // earlier no longer applies.
+  document.body.classList.remove('pp-more', 'pp-compact');
   document.querySelectorAll('.ppmenu').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
   // Clearing what has passed only means something where what has passed is greyed.
   document.querySelectorAll('.ppclearpast').forEach(function (b) { b.hidden = !personal || !PP_PAST; });
@@ -1059,12 +1060,14 @@ document.querySelectorAll('input[name=ppview]').forEach(function (r) {
 
 // --- Exports ---------------------------------------------------------------
 // Both PDFs are the browser's print of the itinerary, which is what lays them out; the compact one sets
-// pp-compact on the body for the print stylesheet, and the class comes off once printing is done.
+// pp-compact on the body for the print stylesheet. The class stays on until the next print chooses
+// again, or the reader leaves My program: it used to come off at `afterprint`, and Safari fires that
+// as soon as its print sheet opens, before the page is laid out for paper, so the compact PDF printed
+// at full size there (reported by the PO, 2026-10-07). On screen the class changes nothing.
 function ppPrint(compact) {
   document.body.classList.toggle('pp-compact', !!compact);
   window.print();
 }
-window.addEventListener('afterprint', function () { document.body.classList.remove('pp-compact'); });
 var ppPrintBtn = document.querySelector('.ppprint');
 if (ppPrintBtn) ppPrintBtn.addEventListener('click', function () { ppPrint(false); });
 var ppPrint2Btn = document.querySelector('.ppprint2');
