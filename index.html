@@ -27,6 +27,12 @@ text-decoration:none;color:inherit;transition:border-color .12s,box-shadow .12s;
 .card h3{margin:0 0 5px;font-size:16px;color:var(--accent)}
 .card p{margin:0;font-size:13.5px;color:#444}
 .card.absent{opacity:.45;pointer-events:none;background:var(--panel);border-style:dashed}
+/* The sessions of the meeting in light green, the rest of the site in light blue (per the PO,
+   2026-10-07). My program keeps its own yellow. */
+.card.green{background:#eef8f0;border-color:#c5e4cc}
+.card.green h3{color:#1d6a37}
+.card.blue{background:#edf4fc;border-color:#c4d8f0}
+.card.blue h3{color:#1f4d86}
 .card.personal{border-color:#e8a300;background:#fffdf6}
 .card.personal h3{color:#8a6100}
 .card.personal .star{color:#e8a300;margin-right:5px}
@@ -63,13 +69,13 @@ Published by the SICB program office. Times are local to the meeting.
 // <year>/<page>/index.html; a page the year does not have yet is shown dimmed.
 (function () {
   var PAGES = [
-    {key: "symposia", title: "Symposia", desc: "Each symposium with its talks and complementary sessions."},
-    {key: "talks", title: "Talks", desc: "Every talk session, symposia and special and complementary sessions included, in the order it runs."},
-    {key: "posters", title: "Posters", desc: "Every poster session by day, with its posters in board order."},
-    {key: "activities", title: "Plenaries, meetings, workshops, &amp; socials", desc: "Everything that is not a session of talks or posters, in the order it runs."},
-    {key: "schedule", title: "Scheduling grid", desc: "The full room-by-time grid for the meeting."},
-    {key: "authors", title: "Participants", desc: "Presenters and the Society's Executive committee."},
-    {key: "venue", title: "Venue", desc: "Floor plans and the rooms the meeting uses."}
+    {key: "talks", tone: "green", title: "Talks", desc: "Every talk session, symposia and special and complementary sessions included, in the order it runs."},
+    {key: "posters", tone: "green", title: "Posters", desc: "Every poster session by day, with its posters in board order."},
+    {key: "activities", tone: "green", title: "Plenaries, meetings, workshops, &amp; socials", desc: "Everything that is not a session of talks or posters, in the order it runs."},
+    {key: "schedule", tone: "blue", title: "Scheduling grid", desc: "The full room-by-time grid for the meeting."},
+    {key: "symposia", tone: "blue", title: "Symposia", desc: "Each symposium with its talks and complementary sessions."},
+    {key: "authors", tone: "blue", title: "Participants", desc: "Presenters and the Society's Executive committee."},
+    {key: "venue", tone: "blue", title: "Venue", desc: "Floor plans and the rooms the meeting uses."}
   ];
   var map = (window.SICB_PAGES || {});
   var years = Object.keys(map).sort().reverse();
@@ -91,7 +97,7 @@ Published by the SICB program office. Times are local to the meeting.
   PAGES.forEach(function (p) {
     var present = have.indexOf(p.key) !== -1;
     var a = document.createElement("a");
-    a.className = "card" + (present ? "" : " absent");
+    a.className = "card " + p.tone + (present ? "" : " absent");
     if (present) a.href = year + "/" + p.key + "/index.html";
     a.innerHTML = "<h3>" + p.title + "</h3><p>" + p.desc +
       (present ? "" : " (not yet published)") + "</p>";
