@@ -686,10 +686,10 @@ function itemText(p) {
 }
 
 // A session matches on its own text when every term is found in its `data-find` or, on the committee
-// site, is its code exactly (its `data-id`, such as dcb-t18).
+// site, is its code exactly (its `data-code`, such as dcb-t18, else its `data-id`).
 function sessionMatches(el) {
   var text = el.dataset.find || '';
-  var code = SEARCH_CODES ? String(el.dataset.id || '').toLowerCase() : '';
+  var code = SEARCH_CODES ? String(el.dataset.code || el.dataset.id || '').toLowerCase() : '';
   return SEARCH.terms.every(function (t) {
     return text.indexOf(t) !== -1 || (code && t === code);
   });
